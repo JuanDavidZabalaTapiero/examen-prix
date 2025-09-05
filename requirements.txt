@@ -1,0 +1,13 @@
+# FLASK
+Flask==3.1.2
+
+# ENV
+python-dotenv==1.1.1
+
+# DB
+Flask-SQLAlchemy==3.1.1
+# DRIVER
+mysqlclient==2.2.7
+
+# MIGRACIONES
+Flask-Migrate==4.1.0
