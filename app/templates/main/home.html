@@ -4,8 +4,11 @@
 
 {% block body %}
 
-<main>
-    <a href="{{url_for('students.home')}}">Nuevo examen</a>
+<main class="container py-5 text-center">
+    <h1 class="mb-4">Inicio</h1>
+    <a href="{{ url_for('students.home') }}" class="btn btn-primary">
+        Nuevo examen
+    </a>
 </main>
 
 {% endblock %}
