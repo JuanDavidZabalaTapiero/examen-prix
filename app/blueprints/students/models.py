@@ -20,3 +20,5 @@ class Response(db.Model):
     option_id = db.Column(db.Integer, db.ForeignKey("options.id"), nullable=False)
 
     # student
+
+    # option

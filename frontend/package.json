@@ -1,0 +1,15 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "copy node_modules\\bootstrap\\dist\\css\\bootstrap.min.css ..\\app\\static\\css\\ && copy node_modules\\bootstrap\\dist\\js\\bootstrap.bundle.min.js ..\\app\\static\\js\\"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bootstrap": "^5.3.8"
+  }
+}

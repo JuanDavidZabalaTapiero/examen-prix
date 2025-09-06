@@ -20,4 +20,8 @@ class Option(db.Model):
     text = db.Column(db.String(255), nullable=False)
     is_correct = db.Column(db.Boolean, nullable=False)
 
+    responses = db.relationship(
+        "Response", backref="option", cascade="all, delete-orphan"
+    )
+
     # question

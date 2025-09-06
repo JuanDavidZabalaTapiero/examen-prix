@@ -1,7 +1,51 @@
 {% extends "base.html" %}
 
+<!-- MENSAJES FLASH -->
+{% set flash_categories = {
+'error_students_home': 'alert-danger',
+'success_students_home': 'alert-success'
+} %}
+
+<!-- TÍTULO -->
 {% block title %}Inicio{% endblock %}
 
+<!-- BODY -->
 {% block body %}
-<h1>Inicio</h1>
+<main class="container py-5">
+    <h1 class="mb-4 text-center">Examen</h1>
+
+    {% if questions %}
+    <form action="{{ url_for('students.save_exam') }}" method="post" class="card shadow p-4 mx-auto"
+        style="max-width: 600px;">
+        <!-- Nombre estudiante -->
+        <div class="mb-4">
+            <label for="student_name" class="form-label fw-bold">Nombre</label>
+            <input type="text" name="student_name" id="student_name" class="form-control"
+                placeholder="Ingresa tu nombre" required>
+        </div>
+
+        <!-- Preguntas -->
+        {% for question in questions %}
+        <div class="mb-4">
+            <p class="fw-semibold">{{ question.text }}</p>
+            {% for option in question.options %}
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="{{ option.id }}"
+                    id="option_{{ option.id }}" required>
+                <label class="form-check-label" for="option_{{ option.id }}">
+                    {{ option.text }}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+
+        <!-- Botón -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary px-4">Enviar</button>
+        </div>
+    </form>
+    {% endif %}
+</main>
+
 {% endblock %}

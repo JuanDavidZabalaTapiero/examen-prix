@@ -1,6 +1,6 @@
 # Cambios en la BD
 
-Si no está la carpeta migrations/:
+Si no está la carpeta migrations/ (iniciar por primera vez):
 ```bash
 flask db init
 ```

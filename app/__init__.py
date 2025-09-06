@@ -1,6 +1,6 @@
-from flask import Flask
+from flask import Flask, render_template
 
-from .blueprints.students.routes import students_bp
+from .blueprints import register_blueprints
 from .config import Config
 from .extensions import db, migrate
 
@@ -19,6 +19,11 @@ def create_app(config_class=Config):
     from . import models  # noqa: F401
 
     # == REGISTRAR BLUEPRINTS ==
-    app.register_blueprint(students_bp)
+    register_blueprints(app)
+
+    # == 404 ==
+    @app.errorhandler(404)
+    def page_not_found(error):
+        return render_template("errors/404.html"), 404
 
     return app

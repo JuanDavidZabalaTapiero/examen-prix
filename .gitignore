@@ -1,9 +1,12 @@
-.env
-
 .venv
+
+.env
 
 __pycache__/
 */__pycache__/
 **/__pycache__/
 
 .ruff_cache/
+
+frontend/node_modules/
+frontend/package-lock.json
