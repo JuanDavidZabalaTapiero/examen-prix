@@ -4,11 +4,61 @@
 
 {% block body %}
 
-<main class="container py-5 text-center">
-    <h1 class="mb-4">Inicio</h1>
-    <a href="{{ url_for('students.home') }}" class="btn btn-primary">
-        Nuevo examen
-    </a>
+<main class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="mb-4">Inicio</h1>
+        <a href="{{ url_for('students.home') }}" class="btn btn-primary btn-lg">
+            Nuevo examen
+        </a>
+    </div>
+
+    <div class="row g-4">
+        {% for q in data %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-center">{{ q.question }}</h5>
+
+                    {% if q.counts | sum > 0 %}
+                    <canvas id="chart-{{ q.question_id }}"></canvas>
+                    {% else %}
+                    <p class="text-muted">Aún no hay respuestas</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </main>
 
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chart.umd.js') }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const chartData = JSON.parse('{{ data | tojson | safe }}')
+
+        chartData.forEach((q) => {
+            const ctx = document.getElementById(`chart-${q.question_id}`)
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: q.labels,
+                        datasets: [{
+                            data: q.counts,
+                            backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#8AFF33']
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                })
+            }
+        })
+    })
+</script>
 {% endblock %}
