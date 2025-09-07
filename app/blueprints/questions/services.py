@@ -1,8 +1,11 @@
 from sqlalchemy.exc import SQLAlchemyError
 
-from .models import Question
+from app.extensions import db
+
+from .models import Option, Question
 
 
+# QUESTIONS
 def get_questions():
     """
     Obtiene todas las preguntas de la base de datos.
@@ -16,4 +19,46 @@ def get_questions():
         return questions
     except SQLAlchemyError as e:
         print(f"Error al intentar consultar las preguntas: {e}")
+        return None
+
+
+def get_question(question_id):
+    try:
+        question = Question.query.get(question_id)
+        return question
+    except SQLAlchemyError as e:
+        print(f"Error al intentar consultar la pregunta: {e}")
+        return None
+
+
+def create_question(question_text):
+    try:
+        question = Question(text=question_text)
+        db.session.add(question)
+        db.session.commit()
+        return question
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        print(f"Error al intentar registrar la pregunta: {e}")
+        return None
+
+
+def get_option(option_id):
+    try:
+        option = Option.query.get(option_id)
+        return option
+    except SQLAlchemyError as e:
+        print(f"Ocurrió un error al intentar consultar la opción: {e}")
+        return None
+
+
+def create_option(question_id, text, is_correct):
+    try:
+        option = Option(question_id=question_id, text=text, is_correct=is_correct)
+        db.session.add(option)
+        db.session.commit()
+        return option
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        print(f"Error al intentar registrar la opción: {e}")
         return None

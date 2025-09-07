@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar | Pregunta{% endblock %}
+
+{% block body %}
+
+{% include "headers/main_header.html" %}
+
+<main class="container py-5">
+    <h1 class="mb-4 text-center">Registrar nueva pregunta</h1>
+
+    <form action="{{ url_for('questions.register_question') }}" method="post" class="card shadow p-4">
+        <div class="mb-3">
+            <label for="question_text" class="form-label">Pregunta</label>
+            <input type="text" name="question_text" id="question_text" class="form-control" required>
+        </div>
+
+        <div id="options" class="mb-3">
+            <label class="form-label">Opciones</label>
+            <div class="option input-group mb-2">
+                <input type="text" name="option_text" class="form-control" placeholder="Escribe una opción" required>
+                <div class="input-group-text">
+                    <input type="radio" name="correct_option" value="0" required>
+                    <span class="ms-1">Correcta</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button id="add_option" class="btn btn-outline-primary">Agregar opción</button>
+            <button type="submit" class="btn btn-success">Registrar</button>
+        </div>
+    </form>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const divOptions = document.getElementById("options")
+        const buttonAdd = document.getElementById("add_option")
+
+        buttonAdd.addEventListener("click", (e) => {
+            e.preventDefault()
+
+            const optionIndex = divOptions.querySelectorAll(".option").length
+
+            const div = document.createElement("div")
+            div.classList.add("option", "input-group", "mb-2")
+
+            const textInput = document.createElement("input")
+            textInput.type = "text"
+            textInput.name = "option_text"
+            textInput.required = true
+            textInput.classList.add("form-control")
+            textInput.placeholder = "Escribe una opción"
+
+            const radioWrapper = document.createElement("div")
+            radioWrapper.classList.add("input-group-text")
+
+            const radioInput = document.createElement("input")
+            radioInput.type = "radio"
+            radioInput.name = "correct_option"
+            radioInput.value = optionIndex
+
+            const label = document.createElement("span")
+            label.classList.add("ms-1")
+            label.innerText = "Correcta"
+
+            radioWrapper.appendChild(radioInput)
+            radioWrapper.appendChild(label)
+
+            div.appendChild(textInput)
+            div.appendChild(radioWrapper)
+
+            divOptions.appendChild(div)
+        })
+    })
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Editar | Pregunta{% endblock %}
+
+{% block body %}
+
+{% include "headers/main_header.html" %}
+
+<main class="container py-5">
+    <div class="card shadow-sm p-4">
+        <h1 class="h3 mb-4">Editar pregunta</h1>
+
+        <form action="{{url_for('questions.update_question')}}" method="post">
+            <!-- ID oculto -->
+            <input type="hidden" name="question_id" value="{{question.id}}">
+
+            <!-- Texto de la pregunta -->
+            <div class="mb-3">
+                <label for="question_text" class="form-label">Pregunta</label>
+                <input type="text" class="form-control" name="question_text" id="question_text"
+                    value="{{question.text}}" required>
+            </div>
+
+            {% if question.options %}
+            <div class="mb-3">
+                <label class="form-label">Opciones</label>
+
+                {% for option in question.options %}
+                <div class="input-group mb-2">
+                    <!-- ID oculto -->
+                    <input type="hidden" name="option_id" value="{{ option.id }}">
+
+                    <!-- Texto de opción -->
+                    <input type="text" class="form-control" name="option_text" value="{{ option.text }}" required>
+
+                    <!-- Selección de respuesta correcta -->
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0" type="radio" name="correct_option" value="{{ option.id }}"
+                            {% if option.is_correct %}checked{% endif %}>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="d-flex justify-content-end">
+                <a href="{{ url_for('questions.home') }}" class="btn btn-secondary me-2">
+                    Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock %}
