@@ -31,13 +31,10 @@ def save_exam():
         student_name = request.form.get("student_name")
 
         # REGISTRAR ALUMNO
-        student = register_student(student_name)
+        success, message, student = register_student(student_name)
 
-        if student is None:
-            flash(
-                "Ocurrió un error al intentar registrar el nombre del alumno",
-                "error_students_exam",
-            )
+        if not success:
+            flash(message, "error_students_exam")
             return redirect(url_for("students.exam"))
 
         # REGISTRAR RESPUESTAS
