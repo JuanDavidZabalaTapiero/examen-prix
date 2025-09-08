@@ -10,14 +10,18 @@ students_bp = Blueprint("students", __name__, url_prefix="/students")
 
 
 @students_bp.route("/")
-def home():
+def index():
+    return redirect(url_for("students.exam"))
+
+
+@students_bp.route("/exam")
+def exam():
     questions = get_questions()
 
     # SELECCIONAR 3 ALEATORIAS
-    if questions:
-        questions = random.sample(questions, k=3)
+    questions = random.sample(questions, k=min(len(questions), 3))
 
-    return render_template("students/home.html", questions=questions)
+    return render_template("students/exam.html", questions=questions)
 
 
 @students_bp.route("/save/exam", methods=["POST"])
@@ -32,9 +36,9 @@ def save_exam():
         if student is None:
             flash(
                 "Ocurrió un error al intentar registrar el nombre del alumno",
-                "error_students_home",
+                "error_students_exam",
             )
-            return redirect(url_for("students.home"))
+            return redirect(url_for("students.exam"))
 
         # REGISTRAR RESPUESTAS
         for key, value in request.form.items():
@@ -45,10 +49,10 @@ def save_exam():
                 if new_response is None:
                     flash(
                         "Ocurrió un error al intentar registrar las respuestas",
-                        "error_students_home",
+                        "error_students_exam",
                     )
-                    return redirect(url_for("students.home"))
+                    return redirect(url_for("students.exam"))
 
-        flash("Examen guardado", "success_students_home")
+        flash("Examen guardado", "success_students_exam")
 
-        return redirect(url_for("students.home"))
+        return redirect(url_for("students.exam"))

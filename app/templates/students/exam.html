@@ -2,8 +2,8 @@
 
 <!-- MENSAJES FLASH -->
 {% set flash_categories = {
-'error_students_home': 'alert-danger',
-'success_students_home': 'alert-success'
+'error_students_exam': 'alert-danger',
+'success_students_exam': 'alert-success'
 } %}
 
 <!-- TÍTULO -->
@@ -45,6 +45,10 @@
             <button type="submit" class="btn btn-primary px-4">Enviar</button>
         </div>
     </form>
+
+    {% else %}
+    <p class="text-muted text-center">No hay preguntas registradas aún.</p>
+
     {% endif %}
 </main>
 
