@@ -5,7 +5,7 @@ from app.extensions import db
 from .models import Option, Question
 
 
-# QUESTIONS
+# == QUESTIONS ==
 def get_questions():
     """
     Obtiene todas las preguntas de la base de datos.
@@ -43,6 +43,30 @@ def create_question(question_text):
         return None
 
 
+def delete_question(question_id):
+    try:
+        question = Question.query.get(question_id)
+        if not question:
+            return False, "Pregunta no encontrada"
+
+        for option in question.options:
+            if option.responses:
+                return (
+                    False,
+                    "No se puede eliminar la pregunta porque tiene respuestas asociadas",
+                )
+
+        db.session.delete(question)
+        db.session.commit()
+        return True, "Pregunta eliminada correctamente"
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        print(f"Error al intentar eliminar la pregunta: {e}")
+        return False, "Error interno al intentar eliminar la pregunta"
+
+
+# == OPTIONS ==
 def get_option(option_id):
     try:
         option = Option.query.get(option_id)

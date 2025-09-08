@@ -5,6 +5,7 @@ from app.extensions import db
 from .services import (
     create_option,
     create_question,
+    delete_question,
     get_option,
     get_question,
     get_questions,
@@ -117,5 +118,17 @@ def update_question():
         db.session.commit()
 
         flash("Pregunta actualizada", "success_questions_home")
+
+    return redirect(url_for("questions.home"))
+
+
+@questions_bp.route("/delete/question/<int:question_id>", methods=["POST"])
+def delete_question_route(question_id):
+    success, message = delete_question(question_id)
+
+    if success:
+        flash(message, "success_questions_home")
+    else:
+        flash(message, "error_questions_home")
 
     return redirect(url_for("questions.home"))
