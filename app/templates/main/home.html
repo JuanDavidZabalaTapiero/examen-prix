@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
+<!-- MENSAJES FLASH -->
+{% set flash_categories = {
+'error_main_home': 'alert-danger',
+'success_main_home': 'alert-success'
+} %}
+
 {% block title %}Home{% endblock %}
 
 {% block body %}
@@ -14,6 +20,25 @@
         </a>
     </div>
 
+    {% if students %}
+    <table class="table table-striped table-hover table-bordered align-middle text-center">
+        <thead class="table-dark">
+            <tr>
+                <th>Alumno</th>
+                <th>% Preguntas correctas</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr>
+                <td>{{ student.name }}</td>
+                <td>{{ student.percentage|round|int }} %</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
     <div class="row g-4">
         {% for q in data %}
         <div class="col-md-6 col-lg-4">
@@ -24,7 +49,7 @@
                     {% if q.counts | sum > 0 %}
                     <canvas id="chart-{{ q.question_id }}"></canvas>
                     {% else %}
-                    <p class="text-muted">Aún no hay respuestas</p>
+                    <p class="text-muted text-center">Aún no hay respuestas</p>
                     {% endif %}
                 </div>
             </div>

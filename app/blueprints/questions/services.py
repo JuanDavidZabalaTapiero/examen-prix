@@ -16,10 +16,10 @@ def get_questions():
     """
     try:
         questions = Question.query.all()
-        return questions
+        return True, "Preguntas obtenidas correctamente", questions
     except SQLAlchemyError as e:
         print(f"Error al intentar consultar las preguntas: {e}")
-        return None
+        return False, "Error interno al consultar las preguntas", []
 
 
 def get_question(question_id):

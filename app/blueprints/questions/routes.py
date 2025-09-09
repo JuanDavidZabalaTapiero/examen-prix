@@ -17,11 +17,11 @@ questions_bp = Blueprint("questions", __name__, url_prefix="/questions")
 @questions_bp.route("/")
 def home():
 
-    questions = get_questions()
+    success, message, questions = get_questions()
 
-    if questions is None:
+    if not success:
         flash(
-            "Ocurrió un error al intentar consultar las preguntas",
+            message,
             "error_questions_home",
         )
 

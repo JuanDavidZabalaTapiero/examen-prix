@@ -16,7 +16,10 @@ def index():
 
 @students_bp.route("/exam")
 def exam():
-    questions = get_questions()
+    success, message, questions = get_questions()
+
+    if not success:
+        flash(message, "error_students_exam")
 
     # SELECCIONAR 3 ALEATORIAS
     questions = random.sample(questions, k=min(len(questions), 3))

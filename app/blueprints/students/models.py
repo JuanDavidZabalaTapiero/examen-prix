@@ -1,3 +1,5 @@
+from sqlalchemy import func
+
 from app.extensions import db
 
 
@@ -6,6 +8,7 @@ class Student(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
 
     responses = db.relationship(
         "Response", backref="student", cascade="all, delete-orphan"
