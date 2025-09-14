@@ -9,7 +9,7 @@ class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
     doc_type_id = db.Column(
-        db.Integer, db.Foreignkey("document_types.id"), nullable=False
+        db.Integer, db.ForeignKey("document_types.id"), nullable=False
     )
     doc_number = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)

@@ -1,7 +1,7 @@
 from app.extensions import db
 
 
-class Enrollment(db.Column):
+class Enrollment(db.Model):
     __tablename__ = "enrollments"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
@@ -9,3 +9,5 @@ class Enrollment(db.Column):
     category_id = db.Column(
         db.Integer, db.ForeignKey("license_categories.id"), nullable=False
     )
+
+    category = db.relationship("LicenseCategory", backref="enrollments")

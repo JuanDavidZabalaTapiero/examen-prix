@@ -9,11 +9,13 @@
     <link rel="shortcut icon" href="{{url_for('static', filename='favicon.ico')}}" type="image/x-icon">
     <!-- CSS BOOTSTRAP -->
     <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <!-- ICONS BOOTSTRAP -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.css') }}">
 </head>
 
 <body>
     <!-- MENSAJES FLASH -->
-    <div class="d-flex justify-content-center position-fixed top-0 start-50 translate-middle-x mt-3"
+    <div class="d-flex flex-column align-items-center position-fixed top-0 start-50 translate-middle-x mt-3"
         style="z-index: 1050;">
         {% if flash_categories %}
         {% for category, alert_class in flash_categories.items() %}

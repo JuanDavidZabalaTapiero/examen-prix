@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "copy node_modules\\bootstrap\\dist\\css\\bootstrap.min.css ..\\app\\static\\css\\ && copy node_modules\\bootstrap\\dist\\js\\bootstrap.bundle.min.js ..\\app\\static\\js\\ && copy node_modules\\chart.js\\dist\\chart.umd.js ..\\app\\static\\js\\"
+    "build": "copy node_modules\\bootstrap\\dist\\css\\bootstrap.min.css ..\\app\\static\\css\\ && copy node_modules\\bootstrap\\dist\\js\\bootstrap.bundle.min.js ..\\app\\static\\js\\ && copy node_modules\\chart.js\\dist\\chart.umd.js ..\\app\\static\\js\\",
+    "move_bootstrap_icons": "mkdir ..\\app\\static\\vendor\\bootstrap-icons\\fonts 2> NUL & copy node_modules\\bootstrap-icons\\font\\bootstrap-icons.css ..\\app\\static\\vendor\\bootstrap-icons\\ & copy node_modules\\bootstrap-icons\\font\\fonts\\* ..\\app\\static\\vendor\\bootstrap-icons\\fonts\\"
   },
   "keywords": [],
   "author": "",
@@ -11,6 +12,7 @@
   "description": "",
   "dependencies": {
     "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
     "chart.js": "^4.5.0"
   }
 }
