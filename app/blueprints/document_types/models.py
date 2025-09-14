@@ -6,3 +6,5 @@ class DocumentType(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     name = db.Column(db.String(50), unique=True, nullable=False)
+
+    students = db.relationship("Student", back_populates="document")

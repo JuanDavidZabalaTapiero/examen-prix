@@ -39,7 +39,8 @@ def create_category():
             return redirect(url_for("categories.new_category"))
 
         flash(message, "success_categories_new_category")
-        return redirect(url_for("categories.new_category"))
+
+    return redirect(url_for("categories.new_category"))
 
 
 # == EDITAR CATEGORÍA ==
@@ -69,6 +70,8 @@ def update_category():
         flash(message, "success_categories_edit_category")
 
         return redirect(url_for("categories.edit_category", category_id=category_id))
+
+    return redirect(url_for("categories.home"))
 
 
 # == ELIMINAR CATEGORÍA ==

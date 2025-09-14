@@ -36,15 +36,16 @@
                     <tr>
                         <td>{{ question.text }}</td>
                         <td class="text-center">
-                            <a href="{{url_for('questions.edit_question', question_id=question.id)}}" class="btn btn-sm btn-info text-white">
-                                Editar
+                            <a href="{{ url_for('questions.edit_question', question_id=question.id) }}"
+                                class="btn btn-sm btn-outline-primary" title="Editar pregunta">
+                                <i class="bi bi-pen-fill"></i>
                             </a>
                         </td>
                         <td class="text-center">
                             <!-- Botón que abre el modal -->
-                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
                                 data-bs-target="#deleteModal-{{ question.id }}">
-                                Eliminar
+                                <i class="bi bi-trash3-fill"></i>
                             </button>
 
                             <!-- Modal -->

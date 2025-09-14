@@ -18,6 +18,8 @@ class Student(db.Model):
         "Response", backref="student", cascade="all, delete-orphan"
     )
 
+    document = db.relationship("DocumentType", back_populates="students", lazy="joined")
+
 
 class Response(db.Model):
     __tablename__ = "responses"

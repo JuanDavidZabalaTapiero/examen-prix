@@ -13,14 +13,14 @@ def create_category_service(name):
         category = LicenseCategory(name=name)
         db.session.add(category)
         db.session.commit()
-        return True, "Categoría registrada", category
+        return True, "Categoría registrada correctamente", category
     except IntegrityError:
         db.session.rollback()
         return False, f"La categoría {name} ya está registrada", None
     except Exception as e:
         db.session.rollback()
         print(f"Error en create_category: {e}")
-        return False, "Error interno al intentar registrar la categoría", None
+        return False, "Error al intentar registrar la categoría", None
 
 
 # == READ ==
@@ -30,7 +30,7 @@ def get_all_categories():
         return True, "Categorías consultadas correctamente", categories
     except Exception as e:
         print(f"Error en get_all_categories: {e}")
-        return False, "Error interno al intentar consultar las categorías", []
+        return False, "Error al intentar consultar las categorías", []
 
 
 def get_category(category_id):
@@ -39,7 +39,7 @@ def get_category(category_id):
         return True, "Categoría consultada correctamente", category
     except Exception as e:
         print(f"Error en get_category: {e}")
-        return False, "Error interno al intentar consultar la categoría", None
+        return False, "Error al intentar consultar la categoría", None
 
 
 # == UPDATE ==
@@ -58,7 +58,7 @@ def update_category_service(category_id, name):
     except Exception as e:
         db.session.rollback()
         print(f"Error en update_category_service: {e}")
-        return False, "Error interno al intentar editar la categoría", None
+        return False, "Error al intentar editar la categoría", None
 
 
 # == DELETE ==
@@ -81,4 +81,4 @@ def delete_category_service(category_id):
     except Exception as e:
         db.session.rollback()
         print(f"Error en delete_category_service: {e}")
-        return False, "Error interno al intentar eliminar la categoría"
+        return False, "Error al intentar eliminar la categoría"

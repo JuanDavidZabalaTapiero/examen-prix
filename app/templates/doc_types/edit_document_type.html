@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+<!-- MENSAJES FLASH -->
+{% set flash_categories = {
+'error_doc_types_edit_document_type': 'alert-danger',
+'success_doc_types_edit_document_type': 'alert-success'
+} %}
+
+{% block title %}Editar | Tipo de documento{% endblock %}
+
+{% block body %}
+
+<!-- HEADER -->
+{% include "headers/main_header.html" %}
+
+<div class="container mt-5">
+    <!-- TÍTULO -->
+    <h1 class="mb-4 text-primary text-center">Editar tipo de documento</h1>
+
+    {% if document %}
+    <!-- CARD CON FORMULARIO -->
+    <div class="card shadow-sm rounded-3 mx-auto" style="max-width: 700px;">
+        <div class="card-body">
+            <form action="{{ url_for('doc_types.update_document_type') }}" method="post">
+                <input type="hidden" name="doc_type_id" value="{{ document.id }}">
+
+                <!-- INPUT -->
+                <div class="mb-3">
+                    <label for="doc_type_name" class="form-label fw-bold">Nombre</label>
+                    <input type="text" name="doc_type_name" id="doc_type_name" class="form-control"
+                        value="{{ document.name }}" maxlength="50" required>
+                </div>
+
+                <!-- BOTONES -->
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('doc_types.home') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
