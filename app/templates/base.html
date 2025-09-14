@@ -15,14 +15,15 @@
 
 <body>
     <!-- MENSAJES FLASH -->
-    <div class="d-flex flex-column align-items-center position-fixed top-0 start-50 translate-middle-x mt-3"
+    <div id="flash-messages"
+        class="d-flex flex-column align-items-center position-fixed top-0 start-50 translate-middle-x mt-3"
         style="z-index: 1050;">
         {% if flash_categories %}
         {% for category, alert_class in flash_categories.items() %}
         {% with messages = get_flashed_messages(category_filter=[category]) %}
         {% if messages %}
         {% for message in messages %}
-        <div class="alert {{alert_class}} fade show" role="alert">
+        <div class="alert {{alert_class}} fade show server-flash" role="alert">
             {{ message }}
         </div>
         {% endfor %}
@@ -37,11 +38,13 @@
 
     <!-- JS BOOTSTRAP -->
     <script src="{{url_for('static', filename='js/bootstrap.bundle.min.js')}}"></script>
+    <!-- MOSTRAR FLASH EN JS -->
+    <script src="{{url_for('static', filename='js/flash.js')}}"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // DESVANECER LOS ALERTS
+            // Desvanecer solo los flashes de Flask
             setTimeout(() => {
-                document.querySelectorAll('.alert').forEach(el => {
+                document.querySelectorAll('.alert.server-flash').forEach(el => {
                     el.classList.remove('show');
                 });
             }, 3000);

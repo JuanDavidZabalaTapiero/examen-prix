@@ -17,7 +17,6 @@ class Student(db.Model):
     responses = db.relationship(
         "Response", backref="student", cascade="all, delete-orphan"
     )
-
     document = db.relationship("DocumentType", back_populates="students", lazy="joined")
 
 

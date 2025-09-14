@@ -5,12 +5,12 @@ from app.extensions import db
 from .models import Response, Student
 
 
-def register_student(name):
-    try:
-        if not name or name.strip() == "":
-            return False, "El nombre no puede estar vacío", None
+def register_student(name, doc_type_id, doc_number):
+    if not name or not doc_type_id or not doc_number:
+        return False, "Todos los campos son obligatorios", None
 
-        new_student = Student(name=name)
+    try:
+        new_student = Student(name=name, doc_type_id=doc_type_id, doc_number=doc_number)
         db.session.add(new_student)
         db.session.commit()
         return True, "Alumno registrado correctamente", new_student
