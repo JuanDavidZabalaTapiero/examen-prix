@@ -28,7 +28,7 @@ def create_document_type_service(name):
 # == READ ==
 def get_all_document_types():
     try:
-        document_types = DocumentType.query.all()
+        document_types = DocumentType.query.order_by(DocumentType.id).all()
         return True, "Tipos de documento consultados correctamente", document_types
     except Exception as e:
         print(f"Error en get_all_document_types: {e}")
