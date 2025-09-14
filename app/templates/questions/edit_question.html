@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
+<!-- MENSAJES FLASH -->
+{% set flash_categories = {
+'error_questions_edit_question': 'alert-danger',
+'success_questions_edit_question': 'alert-success'
+} %}
+
 {% block title %}Editar | Pregunta{% endblock %}
 
 {% block body %}
@@ -7,49 +13,146 @@
 {% include "headers/main_header.html" %}
 
 <main class="container py-5">
-    <div class="card shadow-sm p-4">
-        <h1 class="h3 mb-4">Editar pregunta</h1>
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="h4 mb-4">Editar pregunta</h1>
 
-        <form action="{{url_for('questions.update_question')}}" method="post">
-            <!-- ID oculto -->
-            <input type="hidden" name="question_id" value="{{question.id}}">
+                    <form action="{{ url_for('questions.update_question') }}" method="post" class="needs-validation">
+                        <!-- ID oculto -->
+                        <input type="hidden" name="question_id" value="{{ question.id }}">
 
-            <!-- Texto de la pregunta -->
-            <div class="mb-3">
-                <label for="question_text" class="form-label">Pregunta</label>
-                <input type="text" class="form-control" name="question_text" id="question_text"
-                    value="{{question.text}}" required>
-            </div>
+                        <!-- Texto de la pregunta -->
+                        <div class="mb-3">
+                            <label for="question_text" class="form-label fw-semibold">Pregunta</label>
+                            <input type="text" id="question_text" name="question_text" class="form-control"
+                                value="{{ question.text }}" required>
+                            <div class="invalid-feedback">El texto de la pregunta es obligatorio.</div>
+                        </div>
 
-            {% if question.options %}
-            <div class="mb-3">
-                <label class="form-label">Opciones</label>
+                        {% if question.options %}
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Opciones</label>
 
-                {% for option in question.options %}
-                <div class="input-group mb-2">
-                    <!-- ID oculto -->
-                    <input type="hidden" name="option_id" value="{{ option.id }}">
+                            <div id="options" class="d-flex flex-column gap-2">
+                                {% for option in question.options %}
+                                <div class="input-group">
+                                    <!-- ID oculto -->
+                                    <input type="hidden" name="option_id" value="{{ option.id }}">
 
-                    <!-- Texto de opción -->
-                    <input type="text" class="form-control" name="option_text" value="{{ option.text }}" required>
+                                    <!-- Texto de opción -->
+                                    <input type="text" class="form-control" name="option_text" value="{{ option.text }}"
+                                        required aria-label="Texto de la opción">
 
-                    <!-- Selección de respuesta correcta -->
-                    <div class="input-group-text">
-                        <input class="form-check-input mt-0" type="radio" name="correct_option" value="{{ option.id }}"
-                            {% if option.is_correct %}checked{% endif %}>
-                    </div>
+                                    <!-- Radio para opción correcta -->
+                                    <label class="input-group-text d-flex align-items-center">
+                                        <input class="form-check-input me-0" type="radio" name="correct_option"
+                                            value="{{ option.id }}" {% if option.is_correct %}checked{% endif %}
+                                            required aria-label="Marcar como correcta">
+                                    </label>
+
+                                    <!-- Botón eliminar (usa tu ruta) -->
+                                    <a href="{{ url_for('questions.delete_option', option_id=option.id) }}"
+                                        class="btn btn-outline-danger btn-sm ms-2 d-flex align-items-center justify-content-center"
+                                        title="Eliminar opción">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mt-2 d-flex gap-2 align-items-center">
+                                <button id="add_option" type="button" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-plus-lg me-1"></i> Agregar opción
+                                </button>
+                                <small class="text-muted">Puedes agregar nuevas opciones</small>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning">No hay opciones para esta pregunta.</div>
+                        {% endif %}
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <a href="{{ url_for('questions.home') }}" class="btn btn-secondary me-2">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </form>
+
                 </div>
-                {% endfor %}
             </div>
-            {% endif %}
-
-            <div class="d-flex justify-content-end">
-                <a href="{{ url_for('questions.home') }}" class="btn btn-secondary me-2">
-                    Cancelar
-                </a>
-                <button type="submit" class="btn btn-primary">Guardar</button>
-            </div>
-        </form>
+        </div>
     </div>
 </main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const optionsContainer = document.getElementById("options");
+        const addOptionBtn = document.getElementById("add_option");
+
+        // contador para nuevas opciones (valores únicos que get_option interpretará como no-int)
+        let contador = 1;
+
+        // Función para crear el HTML de una opción nueva (sin link de borrar del servidor)
+        function createOptionRow(idValue, textValue = "", checked = false, isExisting = false) {
+            const wrapper = document.createElement("div");
+            wrapper.className = "input-group";
+
+            // hidden id
+            const inputHidden = document.createElement("input");
+            inputHidden.type = "hidden";
+            inputHidden.name = "option_id";
+            inputHidden.value = idValue; // ejemplo: 'new_option_1'
+            wrapper.appendChild(inputHidden);
+
+            // texto
+            const inputText = document.createElement("input");
+            inputText.type = "text";
+            inputText.name = "option_text";
+            inputText.className = "form-control";
+            inputText.required = true;
+            inputText.placeholder = "Texto de la opción";
+            inputText.value = textValue;
+            wrapper.appendChild(inputText);
+
+            // radio (dentro de label para consistencia con el resto)
+            const radioLabel = document.createElement("label");
+            radioLabel.className = "input-group-text d-flex align-items-center";
+
+            const inputRadio = document.createElement("input");
+            inputRadio.type = "radio";
+            inputRadio.name = "correct_option";
+            inputRadio.className = "form-check-input me-0";
+            inputRadio.value = idValue;
+            inputRadio.required = true;
+            if (checked) inputRadio.checked = true;
+
+            radioLabel.appendChild(inputRadio);
+            wrapper.appendChild(radioLabel);
+
+            if (!isExisting) {
+                const trashBtn = document.createElement("button");
+                trashBtn.type = "button";
+                trashBtn.className = "btn btn-outline-danger btn-sm ms-2";
+                trashBtn.title = "Eliminar opción";
+                trashBtn.innerHTML = '<i class="bi bi-trash"></i>';
+                trashBtn.addEventListener("click", () => wrapper.remove());
+                wrapper.appendChild(trashBtn);
+            }
+
+            return wrapper;
+        }
+
+        // Evento para agregar opción nueva
+        addOptionBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const newId = `new_option_${contador++}`;
+            const row = createOptionRow(newId, "", false, false);
+            optionsContainer.appendChild(row);
+            row.querySelector('input[name="option_text"]').focus();
+        });
+    });
+</script>
 {% endblock %}

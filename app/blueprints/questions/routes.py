@@ -5,6 +5,7 @@ from app.extensions import db
 from .services import (
     create_option,
     create_question,
+    delete_option_service,
     delete_question,
     get_option,
     get_question,
@@ -83,6 +84,7 @@ def edit_question(question_id):
 @questions_bp.route("/update/question", methods=["POST"])
 def update_question():
     if request.method == "POST":
+        # PREGUNTA
         question_id = request.form.get("question_id")
         question = get_question(question_id)
 
@@ -93,8 +95,10 @@ def update_question():
             )
             return redirect(url_for("questions.home"))
 
+        # EDITAR PREGUNTA
         question.text = request.form.get("question_text")
 
+        # OPCIONES
         option_ids = request.form.getlist("option_id")
         option_texts = request.form.getlist("option_text")
         correct_id = request.form.get("correct_option")
@@ -103,8 +107,21 @@ def update_question():
             oid,
             text,
         ) in zip(option_ids, option_texts):
-            option = get_option(int(oid))
+            option = get_option(oid)
 
+            # NO EXISTE (CREAR)
+            if option is False:
+                is_correct = oid == correct_id
+                new_option = create_option(question_id, text, is_correct)
+
+                if new_option is None:
+                    flash(
+                        "Ocurrió un error al intentar crear una nueva opción",
+                        "error_questions_home",
+                    )
+                    return redirect(url_for("questions.home"))
+
+            # ERROR EN DB AL CONSULTARLA
             if option is None:
                 flash(
                     "Ocurrió un error al intentar editar la pregunta y sus opciones",
@@ -112,12 +129,16 @@ def update_question():
                 )
                 return redirect(url_for("questions.home"))
 
-            option.text = text
-            option.is_correct = str(option.id) == correct_id
+            # EXISTE (ACTUALIZAR)
+            if option:
+                option.text = text
+                option.is_correct = str(option.id) == correct_id
 
         db.session.commit()
 
-        flash("Pregunta actualizada", "success_questions_home")
+        flash("Pregunta actualizada", "success_questions_edit_question")
+
+        return redirect(url_for("questions.edit_question", question_id=question_id))
 
     return redirect(url_for("questions.home"))
 
@@ -132,3 +153,24 @@ def delete_question_route(question_id):
         flash(message, "error_questions_home")
 
     return redirect(url_for("questions.home"))
+
+
+# = ELIMINAR OPCIÓN =
+@questions_bp.route("/delete/option/<int:option_id>")
+def delete_option(option_id):
+    option = get_option(option_id)
+
+    if option is None:
+        flash("Error al intentar consultar la opción")
+        return redirect(url_for("questions.home"))
+
+    question_id = option.question.id
+
+    success, message = delete_option_service(option_id)
+
+    if success:
+        flash(message, "success_questions_edit_question")
+    else:
+        flash(message, "error_questions_edit_question")
+
+    return redirect(url_for("questions.edit_question", question_id=question_id))

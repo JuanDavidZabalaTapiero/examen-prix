@@ -69,6 +69,10 @@ def delete_question(question_id):
 # == OPTIONS ==
 def get_option(option_id):
     try:
+        option_id = int(option_id)
+    except ValueError:
+        return False
+    try:
         option = Option.query.get(option_id)
         return option
     except SQLAlchemyError as e:
@@ -86,3 +90,30 @@ def create_option(question_id, text, is_correct):
         db.session.rollback()
         print(f"Error al intentar registrar la opción: {e}")
         return None
+
+
+# = DELETE OPTION =
+def delete_option_service(option_id):
+    if option_id is None:
+        return False, "El ID de la opción es obligatorio"
+    try:
+        option = get_option(option_id)
+
+        if option is False:
+            return False, "El ID de la opción no es válido"
+
+        if option is None:
+            return False, "Error al intentar consultar la opción"
+
+        if option.responses:
+            return False, "La opción tiene respuestas asociadas"
+
+        db.session.delete(option)
+        db.session.commit()
+
+        return True, "Opción eliminada"
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error en delete_option_service: {e}")
+        return False, "Error al intentar eliminar la opción"
