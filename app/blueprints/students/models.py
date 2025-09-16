@@ -14,10 +14,12 @@ class Student(db.Model):
     doc_number = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
 
+    # RELATIONSHIPS
     responses = db.relationship(
         "Response", backref="student", cascade="all, delete-orphan"
     )
     document = db.relationship("DocumentType", back_populates="students", lazy="joined")
+    enrollments = db.relationship("Enrollment", back_populates="student")
 
 
 class Response(db.Model):

@@ -11,3 +11,4 @@ class Enrollment(db.Model):
     )
 
     category = db.relationship("LicenseCategory", backref="enrollments")
+    student = db.relationship("Student", back_populates="enrollments")

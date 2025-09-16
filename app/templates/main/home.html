@@ -27,6 +27,7 @@
                 <th>Documento</th>
                 <th>ID</th>
                 <th>Alumno</th>
+                <th>Categorías</th>
                 <th>% Preguntas correctas</th>
             </tr>
         </thead>
@@ -36,6 +37,9 @@
                 <td>{{student.document}}</td>
                 <td>{{student.doc_number}}</td>
                 <td>{{ student.name }}</td>
+                <td>
+                    {{ student.categories | join(", ") }}
+                </td>
                 <td>{{ student.percentage|round|int }} %</td>
             </tr>
             {% endfor %}
