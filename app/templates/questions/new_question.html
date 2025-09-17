@@ -7,14 +7,20 @@
 {% include "headers/main_header.html" %}
 
 <main class="container py-5">
+    <!-- TÍTULO PRINCIPAL -->
     <h1 class="mb-4 text-center">Registrar nueva pregunta</h1>
 
-    <form action="{{ url_for('questions.register_question') }}" method="post" class="card shadow p-4">
+    <!-- FORMULARIO DE PREGUNTA -->
+    <form action="{{ url_for('questions.register_question') }}" method="post" enctype="multipart/form-data"
+        class="card shadow p-4">
+
+        <!-- CAMPO DE TEXTO DE LA PREGUNTA -->
         <div class="mb-3">
             <label for="question_text" class="form-label">Pregunta</label>
             <input type="text" name="question_text" id="question_text" class="form-control" required>
         </div>
 
+        <!-- OPCIONES DE RESPUESTA -->
         <div id="options" class="mb-3">
             <label class="form-label">Opciones</label>
             <div class="option input-group mb-2">
@@ -26,9 +32,30 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-between">
-            <button id="add_option" class="btn btn-outline-primary">Agregar opción</button>
-            <button type="submit" class="btn btn-success">Registrar</button>
+        <!-- BOTÓN PARA AGREGAR OPCIONES -->
+        <button id="add_option" class="btn btn-outline-primary btn-sm mb-3">
+            <i class="bi bi-plus-circle"></i> Agregar opción
+        </button>
+
+        <!-- SUBIR IMÁGENES -->
+        <div class="mb-3">
+            <label class="form-label">Imágenes</label>
+            <div id="images" class="d-flex flex-column gap-2">
+                <input type="file" name="images" class="form-control">
+            </div>
+            <button id="add_image" class="btn btn-outline-secondary btn-sm mt-2">
+                <i class="bi bi-image"></i> Agregar Imagen
+            </button>
+        </div>
+
+        <!-- BOTONES DE ACCIÓN -->
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ url_for('questions.home') }}" class="btn btn-outline-danger">
+                <i class="bi bi-x-circle"></i> Cancelar
+            </a>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-save"></i> Registrar
+            </button>
         </div>
     </form>
 </main>
@@ -40,6 +67,10 @@
         const divOptions = document.getElementById("options")
         const buttonAdd = document.getElementById("add_option")
 
+        const divImages = document.getElementById("images")
+        const btnAddImage = document.getElementById("add_image")
+
+        // AGREGAR OPCIÓN
         buttonAdd.addEventListener("click", (e) => {
             e.preventDefault()
 
@@ -74,6 +105,34 @@
             div.appendChild(radioWrapper)
 
             divOptions.appendChild(div)
+        })
+
+        // AGREGAR IMAGEN
+        btnAddImage.addEventListener("click", (e) => {
+            e.preventDefault()
+
+            const wrapper = document.createElement("div")
+            wrapper.classList.add("input-group", "mb-2")
+
+            const inputFile = document.createElement("input")
+            inputFile.type = "file"
+            inputFile.name = "images"
+            inputFile.classList.add("form-control")
+
+            const btnTrash = document.createElement("button")
+            btnTrash.type = "button"
+            btnTrash.className = "btn btn-outline-danger"
+            btnTrash.innerHTML = '<i class="bi bi-trash"></i>'
+
+            // Implementar en DOM
+            wrapper.appendChild(inputFile)
+            wrapper.appendChild(btnTrash)
+            divImages.appendChild(wrapper)
+
+            // Evento eliminar
+            btnTrash.addEventListener("click", () => {
+                wrapper.remove()
+            })
         })
     })
 </script>

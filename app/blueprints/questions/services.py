@@ -2,10 +2,25 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.extensions import db
 
-from .models import Option, Question
-
+from .models import Option, Question, QuestionImage
 
 # == QUESTIONS ==
+
+
+# CREATE
+def create_question(question_text):
+    try:
+        question = Question(text=question_text)
+        db.session.add(question)
+        db.session.commit()
+        return question
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        print(f"Error al intentar registrar la pregunta: {e}")
+        return None
+
+
+# READ
 def get_questions():
     """
     Obtiene todas las preguntas de la base de datos.
@@ -31,18 +46,10 @@ def get_question(question_id):
         return None
 
 
-def create_question(question_text):
-    try:
-        question = Question(text=question_text)
-        db.session.add(question)
-        db.session.commit()
-        return question
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        print(f"Error al intentar registrar la pregunta: {e}")
-        return None
+# UPDATE
 
 
+# DELETE
 def delete_question(question_id):
     try:
         question = Question.query.get(question_id)
@@ -67,6 +74,24 @@ def delete_question(question_id):
 
 
 # == OPTIONS ==
+
+
+# CREATE
+def create_option(question_id, text, is_correct):
+    try:
+        option = Option(question_id=question_id, text=text, is_correct=is_correct)
+        db.session.add(option)
+        db.session.commit()
+        return option
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        print(f"Error al intentar registrar la opción: {e}")
+        return None
+
+
+# READ
+
+
 def get_option(option_id):
     try:
         option_id = int(option_id)
@@ -80,19 +105,10 @@ def get_option(option_id):
         return None
 
 
-def create_option(question_id, text, is_correct):
-    try:
-        option = Option(question_id=question_id, text=text, is_correct=is_correct)
-        db.session.add(option)
-        db.session.commit()
-        return option
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        print(f"Error al intentar registrar la opción: {e}")
-        return None
+# UPDATE
 
 
-# = DELETE OPTION =
+# DELETE
 def delete_option_service(option_id):
     if option_id is None:
         return False, "El ID de la opción es obligatorio"
@@ -117,3 +133,30 @@ def delete_option_service(option_id):
         db.session.rollback()
         print(f"Error en delete_option_service: {e}")
         return False, "Error al intentar eliminar la opción"
+
+
+# == QUESTION IMAGE ==
+
+
+# CREATE
+def create_question_image_service(question_id, image_name):
+    if not question_id or not image_name:
+        return False, "Campos obligatorios", None
+
+    try:
+        question_image = QuestionImage(question_id=question_id, image_name=image_name)
+        db.session.add(question_image)
+        db.session.commit()
+        return True, "Imagen guardadas correctamente", question_image
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error en create_question_image_service: {e}")
+        return False, "Error al intentar registrar la imagen", None
+
+
+# READ
+
+# UPDATE
+
+# DELETE

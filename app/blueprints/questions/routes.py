@@ -1,10 +1,23 @@
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+import os
+
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    send_from_directory,
+    url_for,
+)
+from werkzeug.utils import secure_filename
 
 from app.extensions import db
 
 from .services import (
     create_option,
     create_question,
+    create_question_image_service,
     delete_option_service,
     delete_question,
     get_option,
@@ -15,6 +28,7 @@ from .services import (
 questions_bp = Blueprint("questions", __name__, url_prefix="/questions")
 
 
+# == HOME ==
 @questions_bp.route("/")
 def home():
 
@@ -29,6 +43,7 @@ def home():
     return render_template("questions/home.html", questions=questions)
 
 
+# == REGISTRAR PREGUNTA ==
 @questions_bp.route("/new/question")
 def new_question():
     return render_template("questions/new_question.html")
@@ -64,11 +79,29 @@ def register_question():
                 )
                 return redirect(url_for("questions.home"))
 
+        # REGISTRAR IMAGENES
+        images = request.files.getlist("images")
+
+        for file in images:
+            if file and file.filename:
+                image_name = secure_filename(file.filename)
+                filepath = os.path.join(current_app.config["UPLOAD_FOLDER"], image_name)
+                file.save(filepath)
+
+                success_image, message_image, _ = create_question_image_service(
+                    question.id, image_name
+                )
+
+                if not success_image:
+                    flash(message_image, "error_questions_home")
+                    return redirect(url_for("questions.home"))
+
         flash("Pregunta registrada exitosamente", "success_questions_home")
 
     return redirect(url_for("questions.home"))
 
 
+# == EDITAR PREGUNTA ==
 @questions_bp.route("/edit/question/<int:question_id>", methods=["GET", "POST"])
 def edit_question(question_id):
 
@@ -143,6 +176,7 @@ def update_question():
     return redirect(url_for("questions.home"))
 
 
+# == ELIMINAR PREGUNTA ==
 @questions_bp.route("/delete/question/<int:question_id>", methods=["POST"])
 def delete_question_route(question_id):
     success, message = delete_question(question_id)
@@ -155,7 +189,7 @@ def delete_question_route(question_id):
     return redirect(url_for("questions.home"))
 
 
-# = ELIMINAR OPCIÓN =
+# == ELIMINAR OPCIÓN ==
 @questions_bp.route("/delete/option/<int:option_id>")
 def delete_option(option_id):
     option = get_option(option_id)
@@ -174,3 +208,9 @@ def delete_option(option_id):
         flash(message, "error_questions_edit_question")
 
     return redirect(url_for("questions.edit_question", question_id=question_id))
+
+
+# == SERVIR IMAGEN ==
+@questions_bp.route("/images/<filename>")
+def get_question_image(filename):
+    return send_from_directory(current_app.config["UPLOAD_FOLDER"], filename)

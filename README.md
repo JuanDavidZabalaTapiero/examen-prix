@@ -30,6 +30,7 @@ Crea un archivo `.env` en la raíz del proyecto con el siguiente contenido:
 ```env
 SECRET_KEY=tu_clave_secreta
 DATABASE_URL=mysql://usuario:contraseña@host:3306/nombre_bd
+UPLOAD_FOLDER=C:/Users/MyUser/Images
 ```
 
 # Base de datos (migraciones)

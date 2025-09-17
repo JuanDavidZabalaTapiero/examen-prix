@@ -11,6 +11,10 @@ class Question(db.Model):
         "Option", backref="question", cascade="all, delete-orphan"
     )
 
+    images = db.relationship(
+        "QuestionImage", back_populates="question", cascade="all, delete-orphan"
+    )
+
 
 class Option(db.Model):
     __tablename__ = "options"
@@ -25,3 +29,13 @@ class Option(db.Model):
     )
 
     # question
+
+
+class QuestionImage(db.Model):
+    __tablename__ = "question_images"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey("questions.id"), nullable=False)
+    image_name = db.Column(db.String(255), nullable=False)
+
+    question = db.relationship("Question", back_populates="images")

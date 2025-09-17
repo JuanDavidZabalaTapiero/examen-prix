@@ -16,10 +16,14 @@
         <div class="col-12 col-md-10 col-lg-8">
             <div class="card shadow-sm">
                 <div class="card-body p-4">
+
+                    <!-- TÍTULO DEL EXAMEN -->
                     <h1 class="card-title mb-4 text-center">Examen</h1>
 
                     {% if questions %}
                     <form action="{{ url_for('students.save_exam') }}" method="post" class="needs-validation">
+
+                        <!-- === DATOS DEL ESTUDIANTE === -->
                         <!-- Nombre -->
                         <div class="mb-3">
                             <label for="student_name" class="form-label fw-bold">Nombre</label>
@@ -28,9 +32,10 @@
                             <div class="invalid-feedback">Por favor ingresa tu nombre.</div>
                         </div>
 
-                        <!-- Documento: tipo + número en una fila -->
+                        <!-- Documento: tipo + número -->
                         {% if document_types %}
                         <div class="row g-2 mb-3">
+                            <!-- Tipo -->
                             <div class="col-12 col-md-6">
                                 <label for="document_type_id" class="form-label fw-bold">Tipo de documento</label>
                                 <select name="document_type_id" id="document_type_id" class="form-select" required>
@@ -42,6 +47,7 @@
                                 <div class="invalid-feedback">Selecciona el tipo de documento.</div>
                             </div>
 
+                            <!-- Número -->
                             <div class="col-12 col-md-6">
                                 <label for="document_number" class="form-label fw-bold">Número de documento</label>
                                 <input type="text" name="document_number" id="document_number" class="form-control"
@@ -53,14 +59,13 @@
                         <div class="alert alert-warning">No hay tipos de documento registrados.</div>
                         {% endif %}
 
-                        <!-- Categorías (contenedor dinámico) -->
+                        <!-- Categorías -->
                         <div class="mb-3">
                             <label class="form-label fw-bold">Categoría/s</label>
 
                             {% if categories %}
-                            <!-- contenedor donde se añadirán selects -->
+                            <!-- contenedor dinámico de selects -->
                             <div id="select_category" class="d-flex flex-column gap-2 mb-2">
-                                <!-- Select inicial -->
                                 <select name="category_id[]" id="category_id" class="form-select" required>
                                     <option value="" disabled selected>Selecciona...</option>
                                     {% for category in categories %}
@@ -69,30 +74,48 @@
                                 </select>
                             </div>
 
+                            <!-- Botón para agregar más categorías -->
                             <div class="d-flex gap-2">
                                 <button id="add_category" type="button" class="btn btn-outline-secondary btn-sm"
                                     disabled>
                                     <i class="bi bi-plus-lg me-1"></i> Agregar categoría
                                 </button>
-                                <small class="text-muted align-self-center">Puedes agregar varias categorías.</small>
+                                <small class="text-muted align-self-center">
+                                    Puedes agregar varias categorías.
+                                </small>
                             </div>
                         </div>
 
-                        <!-- Preguntas -->
+                        <!-- === PREGUNTAS === -->
                         <div class="mb-4">
                             {% for question in questions %}
                             <div class="card mb-3">
                                 <div class="card-body">
-                                    <p class="fw-semibold mb-2">{{ question.text }}</p>
+
+                                    <!-- Texto de la pregunta -->
+                                    <p class="fw-semibold mb-3">{{ question.text }}</p>
+
+                                    <!-- Imágenes asociadas a la pregunta -->
+                                    {% if question.images %}
+                                    <div class="d-flex justify-content-center flex-wrap gap-2 mb-3">
+                                        {% for image in question.images %}
+                                        <img src="{{ url_for('questions.get_question_image', filename=image.image_name) }}"
+                                            alt="Imagen de la pregunta" class="img-thumbnail"
+                                            style="max-height: 250px; object-fit: cover;">
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+
+                                    <!-- Opciones -->
                                     <div>
                                         {% for option in question.options %}
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio"
                                                 name="question_{{ question.id }}" value="{{ option.id }}"
                                                 id="option_{{ option.id }}" required>
-                                            <label class="form-check-label" for="option_{{ option.id }}">{{
-                                                option.text
-                                                }}</label>
+                                            <label class="form-check-label" for="option_{{ option.id }}">
+                                                {{ option.text }}
+                                            </label>
                                         </div>
                                         {% endfor %}
                                     </div>
@@ -101,9 +124,11 @@
                             {% endfor %}
                         </div>
 
-                        <!-- Botón enviar -->
+                        <!-- BOTÓN ENVIAR EXAMEN -->
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary px-4">Enviar</button>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-send"></i> Enviar
+                            </button>
                         </div>
 
                         {% else %}
