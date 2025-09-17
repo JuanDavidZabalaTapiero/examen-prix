@@ -39,3 +39,13 @@ class QuestionImage(db.Model):
     image_name = db.Column(db.String(255), nullable=False)
 
     question = db.relationship("Question", back_populates="images")
+
+
+class QuestionCompetenceAssociation(db.Model):
+    __tablename__ = "question_competence_association"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey("questions.id"), nullable=False)
+    question_competence_id = db.Column(
+        db.Integer, db.ForeignKey("question_competences.id"), nullable=False
+    )
