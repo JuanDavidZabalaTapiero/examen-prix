@@ -43,7 +43,8 @@
                 <td>{{ student.categories | join(", ") }}</td>
                 {% for comp in competences %}
                 <td>
-                    {{ student.competence_percentages.get(comp, 0)|round|int }} %
+                    {% set pct = student.competence_percentages.get(comp) %}
+                    {{ pct|round|int ~ ' %' if pct is not none else 'Sin respuestas' }}
                 </td>
                 {% endfor %}
                 <td>{{ student.total_percentage|round|int }} %</td>

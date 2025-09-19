@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, render_template
 
 from app.blueprints.questions.services import get_questions
-from app.blueprints.services import get_scores, get_students_with_scores
+from app.blueprints.services import get_scores
 
 main_bp = Blueprint("main", __name__)
 
@@ -29,8 +29,6 @@ def home():
         )
 
     # ESTUDIANTES Y PORCENTAJES
-    results = get_students_with_scores()
-
     results = get_scores()
 
     if not results["success"]:
