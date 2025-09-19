@@ -28,24 +28,31 @@
                 <th>ID</th>
                 <th>Alumno</th>
                 <th>Categorías</th>
-                <th>% Preguntas correctas</th>
+                {% for comp in competences %}
+                <th>% {{ comp }}</th>
+                {% endfor %}
+                <th>% Promedio</th>
             </tr>
         </thead>
         <tbody>
             {% for student in students %}
             <tr>
-                <td>{{student.document}}</td>
-                <td>{{student.doc_number}}</td>
+                <td>{{ student.document }}</td>
+                <td>{{ student.doc_number }}</td>
                 <td>{{ student.name }}</td>
+                <td>{{ student.categories | join(", ") }}</td>
+                {% for comp in competences %}
                 <td>
-                    {{ student.categories | join(", ") }}
+                    {{ student.competence_percentages.get(comp, 0)|round|int }} %
                 </td>
-                <td>{{ student.percentage|round|int }} %</td>
+                {% endfor %}
+                <td>{{ student.total_percentage|round|int }} %</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     {% endif %}
+
 
     <div class="row g-4">
         {% for q in data %}
