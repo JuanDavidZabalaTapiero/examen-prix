@@ -26,7 +26,7 @@ def exam():
         flash(message_questions, "error_students_exam")
 
     # SELECCIONAR 3 ALEATORIAS
-    questions = random.sample(questions, k=min(len(questions), 3))
+    questions = random.sample(questions, k=min(len(questions), 4))
 
     # TIPOS DE DOCUMENTO
     success_documents, message_documents, document_types = get_all_document_types()

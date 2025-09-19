@@ -21,7 +21,7 @@
                     <h1 class="card-title mb-4 text-center">Examen</h1>
 
                     {% if questions %}
-                    <form action="{{ url_for('students.save_exam') }}" method="post" class="needs-validation">
+                    <form action="{{ url_for('students.save_exam') }}" method="post">
 
                         <!-- === DATOS DEL ESTUDIANTE === -->
                         <!-- Nombre -->
@@ -29,7 +29,6 @@
                             <label for="student_name" class="form-label fw-bold">Nombre</label>
                             <input type="text" name="student_name" id="student_name" class="form-control"
                                 placeholder="Ingresa tu nombre completo" required>
-                            <div class="invalid-feedback">Por favor ingresa tu nombre.</div>
                         </div>
 
                         <!-- Documento: tipo + número -->
@@ -44,7 +43,6 @@
                                     <option value="{{ document.id }}">{{ document.name }}</option>
                                     {% endfor %}
                                 </select>
-                                <div class="invalid-feedback">Selecciona el tipo de documento.</div>
                             </div>
 
                             <!-- Número -->
@@ -52,7 +50,6 @@
                                 <label for="document_number" class="form-label fw-bold">Número de documento</label>
                                 <input type="text" name="document_number" id="document_number" class="form-control"
                                     placeholder="Número de documento" required>
-                                <div class="invalid-feedback">Ingresa el número de documento.</div>
                             </div>
                         </div>
                         {% else %}

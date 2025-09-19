@@ -69,7 +69,7 @@
                 </select>
             </div>
             <p class="text-muted small">Puedes agregar más de una competencia</p>
-            <button type="submit" class="btn btn-sm btn-success">
+            <button id="add_competence" class="btn btn-sm btn-success">
                 <i class="bi bi-plus-circle"></i> Agregar competencia
             </button>
         </div>
@@ -200,7 +200,7 @@
         // Crear un <select> dinámico de competencias
         function createCompetenceSelect() {
             const wrapper = document.createElement("div");
-            wrapper.classList.add("input-group", "mb-2");
+            wrapper.classList.add("input-group", "my-2");
 
             const select = document.createElement("select");
             select.name = "competence_id";
