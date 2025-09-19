@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
+<!-- MENSAJES FLASH -->
+{% set flash_categories = {
+'error_questions_new_question': 'alert-danger',
+'success_questions_new_question': 'alert-success'
+} %}
+
 {% block title %}Registrar | Pregunta{% endblock %}
 
 {% block body %}
@@ -8,21 +14,24 @@
 
 <main class="container py-5">
     <!-- TÍTULO PRINCIPAL -->
-    <h1 class="mb-4 text-center">Registrar nueva pregunta</h1>
+    <h1 class="mb-4 text-center text-primary">
+        Registrar Pregunta
+    </h1>
 
     <!-- FORMULARIO DE PREGUNTA -->
     <form action="{{ url_for('questions.register_question') }}" method="post" enctype="multipart/form-data"
-        class="card shadow p-4">
+        class="card shadow p-4 border-0">
 
         <!-- CAMPO DE TEXTO DE LA PREGUNTA -->
         <div class="mb-3">
-            <label for="question_text" class="form-label">Pregunta</label>
-            <input type="text" name="question_text" id="question_text" class="form-control" required>
+            <label for="question_text" class="form-label fw-bold">Pregunta</label>
+            <input type="text" name="question_text" id="question_text" class="form-control"
+                placeholder="Escribe aquí la pregunta" required>
         </div>
 
         <!-- OPCIONES DE RESPUESTA -->
         <div id="options" class="mb-3">
-            <label class="form-label">Opciones</label>
+            <label class="form-label fw-bold">Opciones</label>
             <div class="option input-group mb-2">
                 <input type="text" name="option_text" class="form-control" placeholder="Escribe una opción" required>
                 <div class="input-group-text">
@@ -31,22 +40,42 @@
                 </div>
             </div>
         </div>
-
-        <!-- BOTÓN PARA AGREGAR OPCIONES -->
+        <p class="text-muted small">Puedes agregar más opciones</p>
         <button id="add_option" class="btn btn-outline-primary btn-sm mb-3">
             <i class="bi bi-plus-circle"></i> Agregar opción
         </button>
 
         <!-- SUBIR IMÁGENES -->
         <div class="mb-3">
-            <label class="form-label">Imágenes</label>
+            <label class="form-label fw-bold">Imágenes</label>
             <div id="images" class="d-flex flex-column gap-2">
                 <input type="file" name="images" class="form-control">
             </div>
+            <p class="text-muted small">Puedes agregar más de una imagen</p>
             <button id="add_image" class="btn btn-outline-secondary btn-sm mt-2">
                 <i class="bi bi-image"></i> Agregar Imagen
             </button>
         </div>
+
+        {% if competences %}
+        <!-- COMPETENCIAS -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Competencias</label>
+            <div id="competences">
+                <select name="competence_id" class="form-select" required>
+                    {% for competence in competences %}
+                    <option value="{{competence.id}}">{{competence.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <p class="text-muted small">Puedes agregar más de una competencia</p>
+            <button type="submit" class="btn btn-sm btn-success">
+                <i class="bi bi-plus-circle"></i> Agregar competencia
+            </button>
+        </div>
+        {% else %}
+        <p class="text-danger">No hay competencias registradas</p>
+        {% endif %}
 
         <!-- BOTONES DE ACCIÓN -->
         <div class="d-flex justify-content-between mt-4">
@@ -64,76 +93,142 @@
 {% block scripts %}
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const divOptions = document.getElementById("options")
-        const buttonAdd = document.getElementById("add_option")
+        // Referencias a los contenedores y botones
+        const divOptions = document.getElementById("options");
+        const buttonAdd = document.getElementById("add_option");
 
-        const divImages = document.getElementById("images")
-        const btnAddImage = document.getElementById("add_image")
+        const divImages = document.getElementById("images");
+        const btnAddImage = document.getElementById("add_image");
 
-        // AGREGAR OPCIÓN
+        const divCompetences = document.getElementById("competences");
+        const btnAddCompetence = document.getElementById("add_competence");
+
+        let competences = [];
+
+        // ===== Cargar competencias desde la API =====
+        async function loadCompetences() {
+            try {
+                const res = await fetch("/api/competences/");
+                const json = await res.json();
+
+                if (json.success) {
+                    competences = json.data;
+                } else {
+                    console.error("Error en la API:", json.message);
+                }
+            } catch (err) {
+                console.error("Error en fetch:", err);
+            }
+        }
+
+        // ===== Agregar nueva opción de respuesta =====
         buttonAdd.addEventListener("click", (e) => {
-            e.preventDefault()
+            e.preventDefault();
 
-            const optionIndex = divOptions.querySelectorAll(".option").length
+            const optionIndex = divOptions.querySelectorAll(".option").length;
 
-            const div = document.createElement("div")
-            div.classList.add("option", "input-group", "mb-2")
+            const div = document.createElement("div");
+            div.classList.add("option", "input-group", "mb-2");
 
-            const textInput = document.createElement("input")
-            textInput.type = "text"
-            textInput.name = "option_text"
-            textInput.required = true
-            textInput.classList.add("form-control")
-            textInput.placeholder = "Escribe una opción"
+            // Campo de texto
+            const textInput = document.createElement("input");
+            textInput.type = "text";
+            textInput.name = "option_text";
+            textInput.required = true;
+            textInput.classList.add("form-control");
+            textInput.placeholder = "Escribe una opción";
 
-            const radioWrapper = document.createElement("div")
-            radioWrapper.classList.add("input-group-text")
+            // Radio para marcar la correcta
+            const radioWrapper = document.createElement("div");
+            radioWrapper.classList.add("input-group-text");
 
-            const radioInput = document.createElement("input")
-            radioInput.type = "radio"
-            radioInput.name = "correct_option"
-            radioInput.value = optionIndex
+            const radioInput = document.createElement("input");
+            radioInput.type = "radio";
+            radioInput.name = "correct_option";
+            radioInput.value = optionIndex;
 
-            const label = document.createElement("span")
-            label.classList.add("ms-1")
-            label.innerText = "Correcta"
+            const label = document.createElement("span");
+            label.classList.add("ms-1");
+            label.innerText = "Correcta";
 
-            radioWrapper.appendChild(radioInput)
-            radioWrapper.appendChild(label)
+            radioWrapper.appendChild(radioInput);
+            radioWrapper.appendChild(label);
 
-            div.appendChild(textInput)
-            div.appendChild(radioWrapper)
+            div.appendChild(textInput);
+            div.appendChild(radioWrapper);
+            divOptions.appendChild(div);
+        });
 
-            divOptions.appendChild(div)
-        })
-
-        // AGREGAR IMAGEN
+        // ===== Agregar campo de imagen =====
         btnAddImage.addEventListener("click", (e) => {
-            e.preventDefault()
+            e.preventDefault();
 
-            const wrapper = document.createElement("div")
-            wrapper.classList.add("input-group", "mb-2")
+            const wrapper = document.createElement("div");
+            wrapper.classList.add("input-group", "mb-2");
 
-            const inputFile = document.createElement("input")
-            inputFile.type = "file"
-            inputFile.name = "images"
-            inputFile.classList.add("form-control")
+            const inputFile = document.createElement("input");
+            inputFile.type = "file";
+            inputFile.name = "images";
+            inputFile.classList.add("form-control");
 
-            const btnTrash = document.createElement("button")
-            btnTrash.type = "button"
-            btnTrash.className = "btn btn-outline-danger"
-            btnTrash.innerHTML = '<i class="bi bi-trash"></i>'
+            // Botón eliminar
+            const btnTrash = document.createElement("button");
+            btnTrash.type = "button";
+            btnTrash.className = "btn btn-outline-danger";
+            btnTrash.innerHTML = '<i class="bi bi-trash"></i>';
+            btnTrash.addEventListener("click", () => wrapper.remove());
 
-            // Implementar en DOM
-            wrapper.appendChild(inputFile)
-            wrapper.appendChild(btnTrash)
-            divImages.appendChild(wrapper)
+            wrapper.appendChild(inputFile);
+            wrapper.appendChild(btnTrash);
+            divImages.appendChild(wrapper);
+        });
 
-            // Evento eliminar
-            btnTrash.addEventListener("click", () => {
-                wrapper.remove()
-            })
-        })
-    })
+        // ===== Agregar campo de competencia =====
+        btnAddCompetence.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            if (competences.length === 0) {
+                alert("No hay competencias disponibles");
+                return;
+            }
+
+            const item = createCompetenceSelect();
+            divCompetences.appendChild(item);
+            item.querySelector("select").focus();
+        });
+
+        // Crear un <select> dinámico de competencias
+        function createCompetenceSelect() {
+            const wrapper = document.createElement("div");
+            wrapper.classList.add("input-group", "mb-2");
+
+            const select = document.createElement("select");
+            select.name = "competence_id";
+            select.required = true;
+            select.classList.add("form-select");
+
+            competences.forEach(com => {
+                const opt = document.createElement("option");
+                opt.value = com.id;
+                opt.textContent = com.name;
+                select.appendChild(opt);
+            });
+
+            // Botón eliminar
+            const btnTrash = document.createElement("button");
+            btnTrash.type = "button";
+            btnTrash.className = "btn btn-outline-danger";
+            btnTrash.innerHTML = '<i class="bi bi-trash"></i>';
+            btnTrash.addEventListener("click", () => wrapper.remove());
+
+            wrapper.appendChild(select);
+            wrapper.appendChild(btnTrash);
+
+            return wrapper;
+        }
+
+        // Inicializar
+        loadCompetences();
+    });
 </script>
 {% endblock %}

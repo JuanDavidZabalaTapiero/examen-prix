@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+<!-- MENSAJES FLASH -->
+{% set flash_categories = {
+'error_competences_new_competence': 'alert-danger',
+'success_competences_new_competence': 'alert-success'
+} %}
+
+{% block title %}Registrar | Competencia{% endblock %}
+
+{% block body %}
+
+<!-- ================= HEADER ================= -->
+{% include "headers/main_header.html" %}
+
+<div class="container mt-5">
+
+    <!-- ============ TÍTULO ============ -->
+    <h1 class="mb-4 text-center text-primary">Registrar Competencia</h1>
+
+    <!-- ============ CARD CON FORMULARIO ============ -->
+    <div class="card shadow-sm rounded-3 mx-auto" style="max-width: 500px;">
+        <div class="card-body">
+
+            <!-- FORMULARIO CREAR COMPETENCIA -->
+            <form action="{{ url_for('competences.create_competence') }}" method="post">
+
+                <!-- Campo: Nombre de la competencia -->
+                <div class="mb-3">
+                    <label for="competence_name" class="form-label fw-bold">
+                        Nombre de la competencia
+                    </label>
+                    <input type="text" name="competence_name" id="competence_name" class="form-control"
+                        placeholder="Ejemplo: Adaptación al medio" required>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="d-flex justify-content-between">
+                    <!-- Botón cancelar -->
+                    <a href="{{ url_for('competences.home') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle me-1"></i> Cancelar
+                    </a>
+
+                    <!-- Botón registrar -->
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i> Registrar
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

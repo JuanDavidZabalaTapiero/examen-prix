@@ -12,11 +12,13 @@ from flask import (
 )
 from werkzeug.utils import secure_filename
 
+from app.blueprints.question_competences.services import get_all_question_competences
 from app.extensions import db
 
 from .services import (
     create_option,
     create_question,
+    create_question_competence_association,
     create_question_image_service,
     delete_option_service,
     delete_question,
@@ -32,11 +34,11 @@ questions_bp = Blueprint("questions", __name__, url_prefix="/questions")
 @questions_bp.route("/")
 def home():
 
-    success, message, questions = get_questions()
+    success_questions, message_questions, questions = get_questions()
 
-    if not success:
+    if not success_questions:
         flash(
-            message,
+            message_questions,
             "error_questions_home",
         )
 
@@ -46,7 +48,12 @@ def home():
 # == REGISTRAR PREGUNTA ==
 @questions_bp.route("/new/question")
 def new_question():
-    return render_template("questions/new_question.html")
+    success_c, message_c, competences = get_all_question_competences()
+
+    if not success_c:
+        flash(message_c, "error_questions_new_question")
+
+    return render_template("questions/new_question.html", competences=competences)
 
 
 @questions_bp.route("/register/question", methods=["POST"])
@@ -95,6 +102,20 @@ def register_question():
                 if not success_image:
                     flash(message_image, "error_questions_home")
                     return redirect(url_for("questions.home"))
+
+        # REGISTRAR COMPETENCIAS
+        competences_id = list(set(request.form.getlist("competence_id")))
+
+        print(competences_id)
+
+        for competence_id in competences_id:
+            success_c, message_c, _ = create_question_competence_association(
+                question.id, competence_id
+            )
+
+            if not success_c:
+                flash(message_c, "error_questions_home")
+                return redirect(url_for("questions.home"))
 
         flash("Pregunta registrada exitosamente", "success_questions_home")
 
@@ -177,7 +198,7 @@ def update_question():
 
 
 # == ELIMINAR PREGUNTA ==
-@questions_bp.route("/delete/question/<int:question_id>", methods=["POST"])
+@questions_bp.route("/delete/question/<int:question_id>")
 def delete_question_route(question_id):
     success, message = delete_question(question_id)
 

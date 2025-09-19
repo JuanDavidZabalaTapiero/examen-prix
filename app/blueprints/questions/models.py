@@ -15,6 +15,12 @@ class Question(db.Model):
         "QuestionImage", back_populates="question", cascade="all, delete-orphan"
     )
 
+    competences = db.relationship(
+        "QuestionCompetenceAssociation",
+        back_populates="question",
+        cascade="all, delete-orphan",
+    )
+
 
 class Option(db.Model):
     __tablename__ = "options"
@@ -49,3 +55,5 @@ class QuestionCompetenceAssociation(db.Model):
     question_competence_id = db.Column(
         db.Integer, db.ForeignKey("question_competences.id"), nullable=False
     )
+
+    question = db.relationship("Question", back_populates="competences")

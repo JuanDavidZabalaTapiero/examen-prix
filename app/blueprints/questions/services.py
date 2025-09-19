@@ -2,7 +2,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.extensions import db
 
-from .models import Option, Question, QuestionImage
+from .models import Option, Question, QuestionCompetenceAssociation, QuestionImage
 
 # == QUESTIONS ==
 
@@ -156,6 +156,61 @@ def create_question_image_service(question_id, image_name):
 
 
 # READ
+
+# UPDATE
+
+# DELETE
+
+# == QUESTION COMPETENCE ASSOCIATION ==
+
+
+# CREATE
+def create_question_competence_association(question_id, question_competence_id):
+    if not question_id or not question_competence_id:
+        return False, "Campos obligatorios", None
+
+    try:
+        # VERIFICAR SI YA EXISTE
+        success, _, _ = get_question_competence_association(
+            question_id, question_competence_id
+        )
+
+        if success:
+            return False, "La pregunta y la competencia ya están asociados", None
+
+        new_question_competence = QuestionCompetenceAssociation(
+            question_id=question_id, question_competence_id=question_competence_id
+        )
+        db.session.add(new_question_competence)
+        db.session.commit()
+
+        return True, "Asosiación registrada correctamente", new_question_competence
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error en create_question_competence_association: {e}")
+        return False, "Error al intentar asociar la pregunta con la competencia", None
+
+
+# READ
+def get_question_competence_association(question_id, question_competence_id):
+    if not question_id or not question_competence_id:
+        return False, "Campos obligatorios", None
+
+    try:
+        association = QuestionCompetenceAssociation.query.filter_by(
+            question_id=question_id, question_competence_id=question_competence_id
+        ).first()
+
+        if association:
+            return True, "La asociación ya existe", association
+        else:
+            return False, "La asociación no existe", None
+
+    except Exception as e:
+        print(f"Error en get_question_competence_association: {e}")
+        return False, "Error al intentar consultar la pregunta con la competencia", None
+
 
 # UPDATE
 

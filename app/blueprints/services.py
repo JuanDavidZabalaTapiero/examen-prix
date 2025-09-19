@@ -6,7 +6,10 @@ from .document_types.models import DocumentType
 from .questions.models import Option
 from .students.models import Response, Student
 
+# == CREATE ==
 
+
+# == READ ==
 def get_students_with_scores():
     try:
         query = (
@@ -56,3 +59,8 @@ def get_students_with_scores():
             "message": "Error interno al consultar los estudiantes y porcentajes",
             "data": [],
         }
+
+
+# == UPDATE ==
+
+# == DELETE ==

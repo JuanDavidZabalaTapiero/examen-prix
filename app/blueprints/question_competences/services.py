@@ -14,7 +14,7 @@ def create_question_competence_service(name):
         question_competence = QuestionCompetence(name=name)
         db.session.add(question_competence)
         db.session.commit()
-        return True, "Competencia creada correctamente", question_competence
+        return True, "Competencia registrada correctamente", question_competence
 
     except IntegrityError:
         db.session.rollback()
@@ -27,6 +27,16 @@ def create_question_competence_service(name):
 
 
 # == READ ==
+def get_all_question_competences():
+    try:
+        competences = QuestionCompetence.query.all()
+        return True, "Competencias consultadas correctamente", competences
+
+    except Exception as e:
+        print(f"Error en get_all_question_competences: {e}")
+        return False, "Error al intentar consultar las competencias", None
+
+
 def get_question_competence(question_competence_id):
     if not question_competence_id:
         return False, "Todos los campos son obligatorios", None
@@ -60,6 +70,8 @@ def update_question_competence_service(question_competence_id, name):
         question_competence.name = name
         db.session.commit()
 
+        return True, "Competencia editada correctamente", question_competence
+
     except Exception as e:
         db.session.rollback()
         print(f"Error en update_question_competence_service: {e}")
@@ -69,7 +81,7 @@ def update_question_competence_service(question_competence_id, name):
 # == DELETE ==
 def delete_question_competence_service(question_competence_id):
     if not question_competence_id:
-        return False, "Todos los campos son obligatorios", None
+        return False, "Todos los campos son obligatorios"
 
     try:
         success, message, question_competence = get_question_competence(
@@ -77,12 +89,14 @@ def delete_question_competence_service(question_competence_id):
         )
 
         if not success:
-            return False, message, None
+            return False, message
 
         db.session.delete(question_competence)
         db.session.commit()
 
+        return True, "Competencia eliminada correctamente"
+
     except Exception as e:
         db.session.rollback()
         print(f"Error en delete_question_competence_service: {e}")
-        return False, "Error al intentar eliminar la competencia", None
+        return False, "Error al intentar eliminar la competencia"

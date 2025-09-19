@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+<!-- MENSAJES FLASH -->
+{% set flash_categories = {
+'error_competences_edit_competence': 'alert-danger',
+'success_competences_edit_competence': 'alert-success'
+} %}
+
+{% block title %}Editar | Competencia{% endblock %}
+
+{% block body %}
+
+<!-- HEADER -->
+{% include "headers/main_header.html" %}
+
+<div class="container mt-5">
+    <!-- TÍTULO -->
+    <h1 class="mb-4 text-center">Editar Competencia</h1>
+
+    <!-- FORMULARIO DE EDICIÓN -->
+    <form action="{{ url_for('competences.update_competence') }}" method="post" class="shadow p-4 rounded bg-light">
+
+        <!-- ID oculto de la competencia -->
+        <input type="hidden" name="competence_id" value="{{ competence.id }}">
+
+        <!-- Campo nombre -->
+        <div class="mb-3">
+            <label for="competence_name" class="form-label">Nombre de la competencia</label>
+            <input type="text" class="form-control" name="competence_name" id="competence_name"
+                value="{{ competence.name }}" required>
+        </div>
+
+        <!-- BOTONES DE ACCIÓN -->
+        <div class="d-flex justify-content-between">
+            <!-- Botón volver -->
+            <a href="{{ url_for('competences.home') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle"></i> Volver
+            </a>
+
+            <!-- Botón editar -->
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-pencil-square"></i> Editar
+            </button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
