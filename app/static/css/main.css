@@ -1,0 +1,10 @@
+@font-face {
+    font-family: "MuseoSansCyrl300";
+    src: url("../fonts/MuseoSansCyrl-300.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: "MuseoSansCyrl300", sans-serif;
+}
