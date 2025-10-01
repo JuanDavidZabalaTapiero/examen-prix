@@ -10,6 +10,10 @@ def register_student(name, doc_type_id, doc_number):
     if not name or not doc_type_id or not doc_number:
         return False, "Todos los campos son obligatorios", None
 
+    name = name.strip()
+    doc_type_id = doc_type_id.strip()
+    doc_number = doc_number.strip()
+
     try:
         new_student = Student(name=name, doc_type_id=doc_type_id, doc_number=doc_number)
         db.session.add(new_student)
