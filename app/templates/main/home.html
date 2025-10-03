@@ -20,54 +20,7 @@
         </a>
     </div>
 
-    {% if students %}
-    <table class="table table-striped table-hover table-bordered align-middle text-center">
-        <thead class="table-dark">
-            <tr>
-                <th>Documento</th>
-                <th>ID</th>
-                <th>Alumno</th>
-                <th>Categorías</th>
-                {% for comp in competences %}
-                <th>% {{ comp }}</th>
-                {% endfor %}
-                <th>% Promedio</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for student in students %}
-            <tr>
-                <td>{{ student.document }}</td>
-                <td>{{ student.doc_number }}</td>
-                <td>{{ student.name }}</td>
-                <td>{{ student.categories | join(", ") }}</td>
-                {% for comp in competences %}
-                <td>
-                    {% set pct = student.competence_percentages.get(comp) %}
-                    {{ pct|round|int ~ ' %' if pct is not none else 'Sin respuestas' }}
-                </td>
-                {% endfor %}
-                <td>
-                    <span class="fw-bold">
-                        {{ student.total_percentage|round|int }}%
-                    </span>
-                    <br>
-                    {% if student.total_percentage|round|int > 80 %}
-                    <span class="badge bg-success">
-                        <i class="bi bi-check-circle-fill"></i> Aprobó
-                    </span>
-                    {% else %}
-                    <span class="badge bg-danger">
-                        <i class="bi bi-x-circle-fill"></i> Reprobó
-                    </span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% endif %}
-
+    
 
     <div class="row g-4">
         {% for q in data %}

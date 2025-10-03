@@ -21,7 +21,7 @@
                     <h1 class="card-title mb-4 text-center">Examen</h1>
 
                     {% if questions %}
-                    <form action="{{ url_for('students.save_exam') }}" method="post">
+                    <form action="{{ url_for('students.save_exam') }}" method="post" autocomplete="off">
 
                         <!-- === DATOS DEL ESTUDIANTE === -->
                         <!-- Nombre -->
