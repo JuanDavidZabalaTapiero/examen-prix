@@ -4,6 +4,7 @@ from .services import (
     create_question_competence_service,
     delete_question_competence_service,
     get_all_question_competences,
+    get_competencies_without_parent,
     get_question_competence,
     update_question_competence_service,
 )
@@ -25,15 +26,22 @@ def home():
 # == REGISTRAR ==
 @competences_bp.route("/new")
 def new_competence():
-    return render_template("competences/new_competence.html")
+    ok, msg, competences = get_competencies_without_parent()
+    if not ok:
+        flash(msg, "error_competences_new_competence")
+
+    return render_template("competences/new_competence.html", competences=competences)
 
 
 @competences_bp.route("/create", methods=["POST"])
 def create_competence():
     if request.method == "POST":
         competence_name = request.form.get("competence_name")
+        competence_father = request.form.get("competence_father")
 
-        success, message, _ = create_question_competence_service(competence_name)
+        success, message, _ = create_question_competence_service(
+            competence_name, competence_father
+        )
 
         if success:
             flash(message, "success_competences_new_competence")

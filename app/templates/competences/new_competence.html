@@ -34,6 +34,22 @@
                         placeholder="Ejemplo: Adaptación al medio" required>
                 </div>
 
+                {% if competences %}
+                <div class="mb-3">
+                    <label for="competence_father" class="form-label fw-bold">
+                        Competencia padre
+                    </label>
+                    <select name="competence_father" id="competence_father" class="form-select">
+                        <option value="" selected>Selecciona una opción (opcional)</option>
+                        {% for competence in competences %}
+                        <option value="{{ competence.id }}">{{ competence.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% else %}
+                <p>Sin competencias padre registradas.</p>
+                {% endif %}
+
                 <!-- Botones de acción -->
                 <div class="d-flex justify-content-between">
                     <!-- Botón cancelar -->

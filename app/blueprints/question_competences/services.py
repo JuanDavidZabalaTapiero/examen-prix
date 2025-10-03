@@ -6,12 +6,12 @@ from .models import QuestionCompetence
 
 
 # == CREATE ==
-def create_question_competence_service(name):
+def create_question_competence_service(name, competence_father):
     if not name:
         return False, "Todos los campos son obligatorios", None
 
     try:
-        question_competence = QuestionCompetence(name=name)
+        question_competence = QuestionCompetence(name=name, parent_id=competence_father)
         db.session.add(question_competence)
         db.session.commit()
         return True, "Competencia registrada correctamente", question_competence
@@ -52,6 +52,21 @@ def get_question_competence(question_competence_id):
     except Exception as e:
         print(f"Error en get_question_competence: {e}")
         return False, "Error al intentar consultar la competencia", None
+
+
+def get_competencies_without_parent():
+    try:
+        competences = QuestionCompetence.query.filter(
+            QuestionCompetence.parent_id.is_(None)
+        ).all()
+        return True, "Competencias consultadas", competences
+    except Exception as e:
+        print(f"Error en get_competencies_without_parent: {e}")
+        return (
+            False,
+            "Error al intentar consultas las competencias sin competencia padre",
+            [],
+        )
 
 
 # == UPDATE ==
